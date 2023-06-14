@@ -1,8 +1,2 @@
 .idea
 *.iml
-
-# Shapefile
-*.dbf
-*.prj
-*.shp
-*.shx
