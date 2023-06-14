@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- OpenLayers v7.4.0 -->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
+    <!-- proj4js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.min.js"
+            integrity="sha512-Y/B11KRfeaNHAonSdwnF0fvpzsA+W27fqfMPmfkxRAwuySCcA7aT9LfJcWz5fi32McMI02jngFYj7LYT1z+VVg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Refer to https://github.com/mbostock/shapefile -->
+    <script src="https://unpkg.com/shapefile@0.6"></script>
+    <script src="./js/map.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/popup.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/loading.css">
+
+    <title>simple street tree planting</title>
+</head>
+<body onload="init()">
+<div class="map-wrapper">
+    <div id="map"></div>
+</div>
+<div class="loading-wrapper">
+    <span>LOADING...</span>
+    <span>PLEASE WAIT A FEW MINUTES.</span>
+    <div class="loading">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+</div>
+</body>
+</html>
