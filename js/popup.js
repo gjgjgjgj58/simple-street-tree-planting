@@ -17,13 +17,14 @@ const createInfoPopup = (coord, props) => {
 
 const updateInfoPopup = (coord, props) => {
     const container = document.getElementById('popup');
-    deleteInfoItem(container);
     createInfoItem(props, container);
 
     map.getOverlayById('info').setPosition(coord);
 };
 
 const createInfoItem = (props, container) => {
+    container.innerHTML = ``;
+
     for (const [key, value] of Object.entries(props)) {
         if (key === 'geometry') {
             continue;
@@ -41,8 +42,10 @@ const createInfoItem = (props, container) => {
 };
 
 const deleteInfoItem = (container) => {
-    container = !container ? document.getElementById('popup') : container;
-    container.innerHTML = ``;
+    container = document.getElementById('popup');
+    if (container) {
+        container.innerHTML = ``;
+    }
 };
 
 const popupInfo = (coord, props) => {

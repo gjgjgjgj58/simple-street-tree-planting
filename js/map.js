@@ -1,5 +1,6 @@
 let map;
 let worker;
+let selected;
 
 const DEFAULT_PROJECTION = 'EPSG:3857';
 const TN_STTREE_W = {
@@ -22,18 +23,43 @@ const TREE_STYLE = {
         offset: [0, 0]
     }
 };
-const RADIUS_STYLE = new ol.style.Style({
-    stroke: new ol.style.Stroke({
-        color: '#736E2C',
-        width: 1
+const RADIUS_STYLE = [
+    new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#736E2C',
+            width: 1
+        })
     })
-});
-const STREET_STYLE = new ol.style.Style({
-    stroke: new ol.style.Stroke({
-        color: '#BF7069',
-        width: 3
+];
+const STREET_STYLE = [
+    new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#BF7069',
+            width: 3
+        })
     })
-});
+];
+const SELECTED_STREET_STYLE = [
+    new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#BF7069',
+            width: 7
+        })
+    }),
+    new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: '#FFFFFF',
+            width: 3
+        })
+    })
+];
+const STREET_STYLE_FUNC = (feature) => {
+    if (feature.ol_uid === selected?.ol_uid) {
+        return SELECTED_STREET_STYLE;
+    } else {
+        return STREET_STYLE;
+    }
+};
 
 proj4.defs(
     'EPSG:5179',
@@ -44,7 +70,7 @@ ol.proj.proj4.register(proj4);
 const init = async () => {
     await createMap();
     await handleFetch([TN_STTREE_W, Z_NGII_N3L_A0033320]);
-    await handleClick();
+    await handleMapEvent();
 };
 
 const createMap = async () => {
@@ -63,13 +89,13 @@ const createMap = async () => {
             new ol.layer.Vector({
                 name: TN_STTREE_W.RADIUS_NAME,
                 source: new ol.source.Vector(),
-                style: [RADIUS_STYLE],
+                style: RADIUS_STYLE,
                 minZoom: 17
             }),
             new ol.layer.Vector({
                 name: Z_NGII_N3L_A0033320.NAME,
                 source: new ol.source.Vector(),
-                style: [STREET_STYLE],
+                style: STREET_STYLE_FUNC,
                 minZoom: 15
             })
         ],
@@ -161,7 +187,7 @@ const handleComplete = async () => {
     loading.style.display = 'none';
 };
 
-const handleClick = async () => {
+const handleMapEvent = async () => {
     map.on('singleclick', e => {
         const feature = map.forEachFeatureAtPixel(e.pixel, feature => feature);
 
@@ -170,8 +196,18 @@ const handleClick = async () => {
             const props = feature.getProperties();
 
             popupInfo(coord, props);
+            selected = feature;
+            selected.changed();
         } else {
             deleteInfoItem();
+            selected = undefined;
         }
+    });
+
+    map.on('pointermove', e => {
+        const pixel = map.getEventPixel(e.originalEvent);
+        const hit = map.hasFeatureAtPixel(pixel);
+
+        document.getElementById(map.getTarget()).style.cursor = hit ? 'pointer' : '';
     });
 };
