@@ -15,10 +15,13 @@ const Z_NGII_N3L_A0033320 = {
     PROJECTION: 'EPSG:5179'
 };
 const TREE_STYLE = {
+    variables: {
+        selectedFeatureId: ''
+    },
     symbol: {
         symbolType: 'image',
         src: './images/tree.png',
-        size: [32, 32],
+        size: ['case', ['==', ['get', 'featureId', 'string'], ['var', 'selectedFeatureId']], 64, 32],
         rotateWithView: false,
         offset: [0, 0]
     }
@@ -54,7 +57,7 @@ const SELECTED_STREET_STYLE = [
     })
 ];
 const STREET_STYLE_FUNC = (feature) => {
-    if (feature.ol_uid === selected?.ol_uid) {
+    if (feature.ol_uid === selected?.get('featureId')) {
         return SELECTED_STREET_STYLE;
     } else {
         return STREET_STYLE;
@@ -196,12 +199,18 @@ const handleMapEvent = async () => {
             const props = feature.getProperties();
 
             popupInfo(coord, props);
+            feature.set('featureId', feature.ol_uid);
             selected = feature;
-            selected.changed();
+            TREE_STYLE.variables.selectedFeatureId = feature.ol_uid;
         } else {
             deleteInfoItem();
             selected = undefined;
+            TREE_STYLE.variables.selectedFeatureId = '';
         }
+
+        map.getAllLayers().forEach(layer => {
+            layer.changed();
+        });
     });
 
     map.on('pointermove', e => {
