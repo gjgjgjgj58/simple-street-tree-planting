@@ -6,12 +6,14 @@ const DEFAULT_PROJECTION = 'EPSG:3857';
 const TN_STTREE_W = {
     NAME: 'TREE',
     RADIUS_NAME: 'TREE_R',
-    PATH: './shp/TN_STTREE_W',
+    SHP_PATH: 'https://www.dropbox.com/s/tsukwd5ufn9w7m1/TN_STTREE_W.shp?dl=1',
+    DBF_PATH: 'https://www.dropbox.com/s/a1w2wubye2pyz8t/TN_STTREE_W.dbf?dl=1',
     PROJECTION: 'EPSG:4326'
 };
 const Z_NGII_N3L_A0033320 = {
     NAME: 'STREET',
-    PATH: './shp/Z_NGII_N3L_A0033320',
+    SHP_PATH: 'https://www.dropbox.com/s/cx3uluzs3efx8g5/Z_NGII_N3L_A0033320.shp?dl=1',
+    DBF_PATH: 'https://www.dropbox.com/s/2jhoucjc8vkvju7/Z_NGII_N3L_A0033320.dbf?dl=1',
     PROJECTION: 'EPSG:5179'
 };
 const TREE_STYLE = {
