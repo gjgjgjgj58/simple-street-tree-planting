@@ -1,2 +1,7 @@
 .idea
 *.iml
+
+*.dbf
+*.prj
+*.shp
+*.shx

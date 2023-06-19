@@ -8,8 +8,9 @@ const formattingPath = (path) => {
 
 const getData = async (geoJSON) => {
     try {
-        const path = formattingPath(geoJSON.PATH);
-        const _source = await shapefile.read(path, path, {
+        const _shp = geoJSON.SHP_PATH;
+        const _dbf = geoJSON.DBF_PATH;
+        const _source = await shapefile.read(_shp, _dbf, {
             encoding: 'windows-949'
         });
 
