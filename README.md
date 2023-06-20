@@ -7,9 +7,12 @@
 
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&amp;logo=JavaScript&amp;logoColor=white" />
 
-javascript
 가로수 & 인도 공간정보 데이터(Shapefile)를 활용하여 개인 공부용 가로수 식재 시뮬레이션 웹 애플리케이션 개발
 
+- 클라우드 파일 공유 서비스(Dropbox 활용)에 업로드되어있는 대용량 공간정보 데이터(Shapefile)를 다운로드하여 지도에 렌더링
+- Web Worker와 fetch progress indicator를 활용하여 데이터 처리
+
+## Pages
 https://gjgjgjgj58.github.io/simple-street-tree-planting/
 
 ## Data Source
