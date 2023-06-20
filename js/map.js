@@ -107,7 +107,7 @@ const createMap = async () => {
         target: 'map',
         view: new ol.View({
             projection: DEFAULT_PROJECTION,
-            /** 서울역 근처 **/
+            /** near Seoul Station **/
             center: [14134387.051814102, 4516378.618876206],
             zoom: 17
         })
@@ -155,18 +155,22 @@ const startWorker = (msg) => {
 };
 
 const handleFetch = async (arr) => {
-    const msg = arr;
-
     const loading = document.getElementsByClassName('loading-wrapper')[0];
     const loadingSpan = loading.getElementsByTagName('span')[0];
 
     loadingSpan.textContent = 'FETCHING ' + arr[0].NAME + ' DATA...';
 
-    startWorker(msg);
+    startWorker(arr);
 };
 
 const handleMessage = async (msg) => {
-    const {geoJSON, arr, data} = msg.data;
+    const {geoJSON, arr, data, percent} = msg.data;
+
+    if (typeof percent === 'number') {
+        await indicateLoading(percent);
+        return;
+    }
+
     const features = await getFeatures(geoJSON, data);
 
     await getSource(geoJSON.NAME).addFeatures(features);
@@ -184,11 +188,18 @@ const handleMessage = async (msg) => {
     }
 };
 
+const indicateLoading = async (percent) => {
+    const loading = document.getElementsByClassName('loading-wrapper')[0];
+    const loadingSpan = loading.getElementsByTagName('span')[2];
+
+    loadingSpan.textContent = percent + '%';
+};
+
 const handleComplete = async () => {
     const loading = document.getElementsByClassName('loading-wrapper')[0];
-    const loadingSpan = loading.getElementsByTagName('span')[0];
 
-    loadingSpan.textContent = 'LOADING...';
+    loading.getElementsByTagName('span')[0].textContent = 'LOADING...';
+    loading.getElementsByTagName('span')[2].textContent = '';
     loading.style.display = 'none';
 };
 
