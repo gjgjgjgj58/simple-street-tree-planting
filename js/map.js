@@ -6,14 +6,14 @@ const DEFAULT_PROJECTION = 'EPSG:3857';
 const TN_STTREE_W = {
     NAME: 'TREE',
     RADIUS_NAME: 'TREE_R',
-    SHP_PATH: 'https://dl.dropboxusercontent.com/s/tsukwd5ufn9w7m1/TN_STTREE_W.shp?dl=1',
-    DBF_PATH: 'https://dl.dropboxusercontent.com/s/a1w2wubye2pyz8t/TN_STTREE_W.dbf?dl=1',
+    SHP_PATH: '../shp/TN_STTREE_W.shp', // 'https://dl.dropboxusercontent.com/s/tsukwd5ufn9w7m1/TN_STTREE_W.shp?dl=1'
+    DBF_PATH: '../shp/TN_STTREE_W.dbf', // 'https://dl.dropboxusercontent.com/s/a1w2wubye2pyz8t/TN_STTREE_W.dbf?dl=1'
     PROJECTION: 'EPSG:4326'
 };
 const Z_NGII_N3L_A0033320 = {
     NAME: 'STREET',
-    SHP_PATH: 'https://dl.dropboxusercontent.com/s/cx3uluzs3efx8g5/Z_NGII_N3L_A0033320.shp?dl=1',
-    DBF_PATH: 'https://dl.dropboxusercontent.com/s/2jhoucjc8vkvju7/Z_NGII_N3L_A0033320.dbf?dl=1',
+    SHP_PATH: '../shp/Z_NGII_N3L_A0033320.shp', // 'https://dl.dropboxusercontent.com/s/cx3uluzs3efx8g5/Z_NGII_N3L_A0033320.shp?dl=1'
+    DBF_PATH: '../shp/Z_NGII_N3L_A0033320.dbf', // 'https://dl.dropboxusercontent.com/s/2jhoucjc8vkvju7/Z_NGII_N3L_A0033320.dbf?dl=1'
     PROJECTION: 'EPSG:5179'
 };
 const TREE_STYLE = {
@@ -76,6 +76,7 @@ const init = async () => {
     await createMap();
     await handleFetch([TN_STTREE_W, Z_NGII_N3L_A0033320]);
     await handleMapEvent();
+    await addControl();
 };
 
 const createMap = async () => {
@@ -203,33 +204,29 @@ const handleComplete = async () => {
     loading.style.display = 'none';
 };
 
-const handleMapEvent = async () => {
-    map.on('singleclick', e => {
-        const feature = map.forEachFeatureAtPixel(e.pixel, feature => feature);
+const handleMapEvent = async (flag) => {
+    if (!flag) {
+        map.on('singleclick', handleSingleClickEvent);
+        map.on('pointermove', handlePointerMoveEvent);
+    } else {
+        map.un('singleclick', handleSingleClickEvent);
+        map.un('pointermove', handlePointerMoveEvent);
+    }
+};
 
-        if (feature) {
-            const coord = e.coordinate;
-            const props = feature.getProperties();
+const handleSingleClickEvent = (e) => {
+    const feature = map.forEachFeatureAtPixel(e.pixel, feature => feature);
 
-            popupInfo(coord, props);
-            feature.set('featureId', feature.ol_uid);
-            selected = feature;
-            TREE_STYLE.variables.selectedFeatureId = feature.ol_uid;
-        } else {
-            deleteInfoItem();
-            selected = undefined;
-            TREE_STYLE.variables.selectedFeatureId = '';
-        }
+    if (feature) {
+        openPopup(e.coordinate, feature);
+    } else {
+        closePopup();
+    }
+};
 
-        map.getAllLayers().forEach(layer => {
-            layer.changed();
-        });
-    });
+const handlePointerMoveEvent = (e) => {
+    const pixel = map.getEventPixel(e.originalEvent);
+    const hit = map.hasFeatureAtPixel(pixel);
 
-    map.on('pointermove', e => {
-        const pixel = map.getEventPixel(e.originalEvent);
-        const hit = map.hasFeatureAtPixel(pixel);
-
-        document.getElementById(map.getTarget()).style.cursor = hit ? 'pointer' : '';
-    });
+    document.getElementById(map.getTarget()).style.cursor = hit ? 'pointer' : '';
 };

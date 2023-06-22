@@ -55,3 +55,24 @@ const popupInfo = (coord, props) => {
         updateInfoPopup(coord, props);
     }
 };
+
+const openPopup = (coord, feature) => {
+    feature.set('featureId', feature.ol_uid);
+    popupInfo(coord, feature.getProperties());
+    selected = feature;
+    TREE_STYLE.variables.selectedFeatureId = feature.ol_uid;
+
+    map.getAllLayers().forEach(layer => {
+        layer.changed();
+    });
+};
+
+const closePopup = () => {
+    deleteInfoItem();
+    selected = undefined;
+    TREE_STYLE.variables.selectedFeatureId = '';
+
+    map.getAllLayers().forEach(layer => {
+        layer.changed();
+    });
+};
